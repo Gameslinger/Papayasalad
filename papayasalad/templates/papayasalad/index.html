@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Welcome, {{user.username}}!</h1>
+{% else %}
+<h1>{% trans "Welcome to the website. Sign in!" %}</h1>
+{% endif %}
+<h3>What is our purpose?</h3>
+<img src="/static/images/jesus.png" />
+<p>
+Invite others to come unto Christ by helping them receive
+ the restored gospel through faith in Jesus Christ and His
+ Atonement, repentance, baptism, receiving the gift of the
+ Holy Ghost, and enduring to the end.
+</p>
+
+<h3>What is this website for?</h3>
+<p>
+This website is designed to be an aid to helping Thai students
+learn English through a variety of tools. The goal is to reinvent
+our teaching technique to give students the access to the help they
+need, when they need it.
+</p>
+
+<h3>How do I begin?</h3>
+<p>
+Please contact your local missionaries at ###-###-#### to get additional information
+They can give you their "room code" to allow you to join their English group
+and access their learning resources.
+</p>
+{% endblock content %}

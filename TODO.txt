@@ -1,0 +1,42 @@
+View Quiz Scores:
+-Group submissions by user
+-Option to delete submissions
+
+Classroom:
+-View Users, recent activity, etc
+-Grades? Probably not, people aren't consistent enough
+
+Lessons:
+-Fix deleting resources that aren't available. Should delete silently even if resource doesn't exist
+-Create link to unique page for each lesson?
+	->Add pictures to heading
+	->Lesson description
+	->Links to resources
+
+Quizes:
+-Option for case sensitivity of responses
+-Picture support for questions/Multiple choice answers
+-Submitting quiz returns page of answers correct/incorrect (Teacher shall be able to disable)
+-Private option to restrict to specific classrooms
+-Option to change question order
+-Attach Audio to read questions?
+-Edit questions instead of deleting them just to recreate them
+
+Vocab:
+-Allow creator to record/ rerecord presaved words
+-Implement Check off for words
+-Move delete button, add confirm dialog
+-Fix edit title
+-Private option to restrict to classroom
+-Users can create lists
+-Copy list option to edit
+
+
+General:
+-Add contact page for missionaries, church locations, get to know the teachers.
+-Add Translation support
+
+Users:
+-Change password page
+-Change classroom page
+-Change way users are admitted into classroom?

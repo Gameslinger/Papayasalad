@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+	<h1>{{quiz.title}}</h1>
+	<a href="/quizzes/{{quiz.id}}">&lt;View Quiz&gt;</a>
+	<a href="edit">&lt;Edit Quiz&gt;</a>
+	<ol>
+	{% for question in quiz.question_set.all %}
+		<li>{{question.text}} (Answer="{{question.correctAnswer}}", value={{question.point_value}})
+			<ul>
+			{% for response in question.answer_set.all %}
+				<li class="sub_{{response.submission.id}}"
+				{#Score questions as correct if response equals correct answer or no correct answer: #}
+				{% if question.correctAnswer|length == 0 or response.text == question.correctAnswer %}
+				 style="display:none; color:green;"
+				{% else %}
+				 style="display:none; color:red;"
+				{% endif %}
+				>{{response.submission.user.username}}: "{{response.text}}"</li>
+			{% endfor %}	
+			</ul>
+	{% endfor %}
+	</ol>
+	{#TODO allow users to check box who they want to view the submission for #}
+	<h2>Submissions:</h2>
+	<ul>
+	{% for submission in submissions %}
+		<li><input type="checkbox" id="sub_{{submission.id}}" onclick="toggleSubmissionVisibility(this.id, this.checked)"></input>{{submission}}</li>
+	{% endfor %}
+	</ul>
+{% endblock content %}
+
+{% block afterbody %}
+<script>
+function toggleSubmissionVisibility(id,isChecked){
+	var answers = document.getElementsByClassName(id);
+	for(answer of answers){
+		answer.style.display = isChecked ? "inherit" : "none";
+	}
+}
+</script>
+{% endblock afterbody %}

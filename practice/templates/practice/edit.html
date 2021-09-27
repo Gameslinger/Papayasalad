@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content%}
+	<form action="" method="post"  enctype="multipart/form-data"  autocomplete="off">
+	{% csrf_token %}
+	<h1>{{lesson_name}}</h1>
+	<ul class="pretty-list" style="list-style: none;">
+	{% for resource_field in form.get_resource_fields %}
+		<li>{{resource_field}}{{resource_field.label}}</li>
+		
+	{% endfor %}
+	</ul>
+	<!--^^TODO: Remove hard coded URL!-->
+	<br><br>
+	{% if quiz_resource_list|length > 0 %}
+	Edit:
+	{% for resource in quiz_resource_list %}
+		<a href="{{resource.link}}edit">{{resource.title}}</a>, 
+	{% endfor %}
+	<br>
+	{% endif %}
+	
+	<button type="submit" name="delete" value="1">Delete Selected</button>
+	<br><br>
+	{{form.newResourceType}}{{form.newResourceTitle.label}}{{form.newResourceTitle}}
+	<button type="submit" name="add" value="1">Add</button>
+	<div id="file-field" style="display:none;">
+	{{form.resourceFileUpload}}
+	</div>
+	<div id="url-fields" style="display:none;">
+	{{form.urlTextField.label}}{{form.urlTextField}}
+	</div>
+	<br><br>
+	{{form.lessonRename.label}}{{form.lessonRename}}
+	<button type="submit" name="rename" value="1">Rename Lesson</button>
+	<br>
+	<a href="/practice/">Done</a>
+	<br><br>
+	<button type="submit" name="delete_lesson" value="1">Delete Lesson</button>
+	
+	<!--^^TODO: Remove hard coded URL!-->
+	</form>
+{% endblock content %}
+
+{% block afterbody %}
+<script>
+var resourceType = document.getElementById("id_newResourceType");
+var fileField = document.getElementById("file-field");
+var urlField = document.getElementById("url-fields");
+resourceType.addEventListener("change", toggleFields);
+function toggleFields(){
+	var value = resourceType.selectedIndex;
+	switch(value){
+		case 0://Quiz
+			fileField.style.display = "none";
+			urlField.style.display = "none";
+		break;
+		case 1://File
+			fileField.style.display = "block";
+			urlField.style.display = "none";
+		break;
+		case 2://URL
+			fileField.style.display = "none";
+			urlField.style.display = "block";
+		break;
+		default:
+			alert("option not implimented!");
+	}
+}
+</script>
+{% endblock afterbody %}

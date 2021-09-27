@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+	<form action="" method="post"  autocomplete="off">
+	{% csrf_token %}
+	<h1>{{quiz.title}}</h1>
+	<a href="./">&lt;View Quiz&gt;</a>
+	<a href="score">&lt;View Scores&gt;</a>
+	<ul >
+	{% for question_field in form.get_question_fields %}
+		<li>{{question_field}}{{question_field.label}}</li>
+		<!--Show correct answer when displaying questions-->
+	{% endfor %}
+	</ul>
+	<button type="submit" name="delete" value="1">Delete Selected</button>
+	<br>
+	{{form.question_text.label}}{{form.question_text}}
+	{{form.question_type}}
+	{{form.point_value.label}}{{form.point_value}}
+	<br>
+	{{form.answer_field_1.label}}{{form.answer_field_1}}
+	<div id="answer-fields" style="display:none;">
+	{{form.answer_field_2.label}}{{form.answer_field_2}}<br>
+	{{form.answer_field_3.label}}{{form.answer_field_3}}<br>
+	{{form.answer_field_4.label}}{{form.answer_field_4}}<br>
+	{{form.correct_answer.label}}{{form.correct_answer}}
+	</div>
+	<button type="submit" name="add" value="1">Add</button><br>
+	<br>
+	<!--^^TODO: Remove hard coded URL!-->
+	{{form.quiz_rename_field.label}}{{form.quiz_rename_field}}
+	<button type="submit" name="rename_quiz" value="1">Rename Quiz</button>
+	<br>
+	<br><br>
+	<button type="submit" name="delete_quiz" value="1">Delete Quiz</button>
+	</form>
+{% endblock content %}
+
+{% block afterbody %}
+<script>
+var selectBox = document.getElementById("id_question_type");
+var optionFields = document.getElementById("answer-fields");
+selectBox.addEventListener("change",toggleFields);
+function toggleFields(){
+	var value = selectBox.selectedIndex;
+	switch(value){
+		case 0:
+			optionFields.style.display = "none";
+		break;
+		case 1:
+			optionFields.style.display = "block";
+		break;
+		default:
+			alert("option not implimented!");
+	}
+}
+</script>
+{% endblock afterbody %}

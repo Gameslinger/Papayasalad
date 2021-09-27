@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block content %}
+<form id="wordForm" action="" method="post"  enctype="multipart/form-data"  autocomplete="off">
+<h3>{{title}}</h3>
+{{form.newTitle.label}}{{form.newTitle}}
+<button type="submit" name="changeTitle" value="1">Change</button>
+{% csrf_token %}
+<table>
+<tr>
+<th>Delete</th>
+<th>Check off</th>
+<th>Word</th>
+</tr>
+{# TODO: Make check and delete not dependent on order added in form #}
+{% for field in form.get_word_fields %}
+	{% if not forloop.counter|divisibleby:2 %}
+	<tr>
+	{% endif %}
+	<td>{{field}} {{words.forloop.counter}}</td>
+	{% if forloop.counter|divisibleby:2 %}
+	<td>{{field.label}}<td>
+	</tr>
+	{% endif %}
+{% endfor %}
+{% for word in words %}
+	{% if word.audioClip %}
+		<audio controls  >
+		<source src="/media/{{word.audioClip}}" type="audio/wav">
+		No audio available
+		</audio>
+	{% endif %}
+{% endfor %}
+</table>
+<h3>Add word:</h3>
+{{form.newWord.label}}{{form.newWord}}<br>
+{{form.definition.label}}{{form.definition}}
+{#{{form.audioClip}}#}
+<br>
+<button type="submit" id="addWord" value="1" >Save</button>
+<button type="submit" name="deleteWords" value="1">Delete words</button>
+</form>
+<audio controls id="audioPlayer" style="display:none;">
+
+</audio>
+<button id="recordButton">Record</button>
+<button id="stopButton">Stop</button>
+<button id="clearButton">Clear</button>
+<br>
+<a href="../">Back</a>
+{% endblock content %}
+
+{% block afterbody %}
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+
+<script>
+URL = window.URL || window.webkitURL;
+var gumStream;
+var rec;
+var input;
+// shim for AudioContext when it's not avb. 
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+var audioContext //audio context to help us record
+
+var recordButton = document.getElementById("recordButton");
+var stopButton = document.getElementById("stopButton");
+var clearButton = document.getElementById("clearButton");
+//var uploadButton = document.getElementById("uploadButton");
+var au = document.getElementById('audioPlayer');
+var wordForm = document.getElementById("wordForm")
+
+wordForm.onsubmit = function(event){ saveWord(event)}
+var audioBlob = null;
+
+recordButton.addEventListener("click", startRecording);
+stopButton.addEventListener("click", stopRecording);
+clearButton.addEventListener("click", clearBlob);
+//uploadButton.addEventListener("click",uploadAudio);
+
+recordButton.disabled = false;
+stopButton.disabled = true;
+
+function startRecording() {
+	console.log("recordButton clicked");
+    var constraints = { audio: true, video:false }
+
+	recordButton.disabled = true;
+	stopButton.disabled = false;
+
+	navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+		console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
+
+		/*
+			create an audio context after getUserMedia is called
+			sampleRate might change after getUserMedia is called, like it does on macOS when recording through AirPods
+			the sampleRate defaults to the one set in your OS for your playback device
+
+		*/
+		audioContext = new AudioContext();
+
+		/*  assign to gumStream for later use  */
+		gumStream = stream;
+		
+		/* use the stream */
+		input = audioContext.createMediaStreamSource(stream);
+
+		/* 
+			Create the Recorder object and configure to record mono sound (1 channel)
+			Recording 2 channels  will double the file size
+		*/
+		rec = new Recorder(input,{numChannels:1})
+
+		//start the recording process
+		rec.record()
+
+		console.log("Recording started");
+	}).catch(function(err) {
+	  	console.log(err.message)
+		//enable the record button if getUserMedia() fails
+    	recordButton.disabled = false;
+    	stopButton.disabled = true;
+	});
+}
+
+function stopRecording() {
+    console.log("stopButton clicked");
+	
+	stopButton.disabled = true;
+    recordButton.disabled = false;
+	
+    rec.stop();
+    gumStream.getAudioTracks()[0].stop();
+    //create the wav blob and pass it on to createDownloadLink 
+    
+	rec.exportWAV(createDownloadLink);
+	
+}
+
+function saveBlob(blob){
+	console.log("Saving blob")
+	audioBlob = blob;
+}
+function clearBlob(){
+	console.log("Clearing blob")
+	audioBlob = null;
+	au.src = null;
+	au.style.display = "none";
+}
+
+function createDownloadLink(blob) {
+    url = URL.createObjectURL(blob);
+	saveBlob(blob);
+
+    //au.controls = true;
+    au.src = url;
+	au.style.display = "inherit";
+}
+
+
+
+function saveWord(event){
+	event.preventDefault();
+	var fd = new FormData(wordForm);
+	if(audioBlob != null){ 
+	console.log("Blob found... adding to form");
+	var filename = new Date().toISOString()+".wav";
+	fd.append("audioClip", audioBlob, filename);
+	}
+	fd.append("addWord","1");
+
+	var xhr = new XMLHttpRequest();
+	xhr.onload = function(e) {
+		if (this.readyState === 4) {
+			console.log("Server returned: ", e.target.responseText);
+			location.reload()
+		}
+	};
+	xhr.open("POST", "", true);
+	xhr.send(fd);
+
+
+}
+</script>
+{% endblock afterbody %}

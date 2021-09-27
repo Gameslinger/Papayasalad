@@ -1,0 +1,44 @@
+body{
+	text-align:center;
+	background-color:#66ccff;
+}
+.content{
+	background-color:white;
+	border: 3px solid gray;
+	border-radius:10px;
+	//width:80%;
+	height:105%;
+}
+
+.head-title{
+
+}
+.top-menu{
+	
+}
+
+.side-menu{
+	background-color:white;
+	//resize:horizontal:
+	overflow-x:auto
+}
+.side-menu-list{
+    max-height: 90%;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+	overflow-x: hidden; 
+	list-style-type:none;
+}
+.pretty-list{
+	list-style:none;
+}
+.pretty-list > div,li{
+  //margin: 0% 35% 0%;
+	//border: 1px solid gray;
+	border-radius:15px;
+}
+
+.top-menu-list {
+	
+}

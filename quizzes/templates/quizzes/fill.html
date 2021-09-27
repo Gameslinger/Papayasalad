@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+	<h1>{{quiz_name}}</h1>
+	{% if isTeacher %}
+	<a href="edit">&lt;Edit Quiz&gt;</a>
+	<a href="score">&lt;View Scores&gt;</a>
+	{% endif %}
+	<form action="" method="post" autocomplete="off">
+	{% csrf_token %}
+    {% for question_field in form.get_question_fields %}		
+		{{forloop.counter}}. {{question_field.label}}
+		{{question_field}}
+		<br>
+	{% endfor %}
+	<input type="submit" value="Submit">
+	</form>
+	<a href="/quizzes/">Back</a>
+{% endblock content %}

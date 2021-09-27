@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+	<h1>Quizzes!</h1>
+	Search Quizzes:
+	<input type="text" id="search_box"></input>
+	<ul id="quiz_list" class="pretty-list">
+	{% comment %}
+	{% for quiz in quiz_list %}
+	<li><a href="{{quiz.id}}/">"{{quiz.title}}" by {{quiz.author}} ({{quiz.postDate}})</a></li>
+	{% endfor %}
+	{% endcomment %}
+	</ul>
+	<!--TODO: Remove hard coded URLS! -->
+{% endblock content %}
+
+{% block afterbody %}
+	<script>
+	queryQuiz();
+	var last_input = ""
+	function queryQuiz(){
+		var search = document.getElementById("search_box").value
+		if(last_input == search){
+			return;
+		}
+		last_input = search;
+		var list = document.getElementById("quiz_list");
+		while (list.firstChild){
+			list.removeChild(list.lastChild);
+		}
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function(){
+			if (this.readyState == 4 && this.status == 200) {
+				var items = JSON.parse(this.responseText);
+				for(var item of items){
+					var list_item = document.createElement("LI");
+					var list_link = document.createElement("a");
+					var item_text = document.createTextNode("\""+item.title+"\"" + " by " +item.author+ " ("+ item.publishDate +")");
+					list_link.appendChild(item_text);
+					list_link.href = item.id;
+					list_item.appendChild(list_link);
+					list.appendChild(list_item);
+				}
+			}
+		}
+		xhttp.open("GET","/quizzes/query?search="+search);
+		xhttp.send();
+	}
+	//TODO: Is this a good update interval or will this flood the server?
+	setInterval(queryQuiz,200)
+	</script>
+{% endblock afterbody %}

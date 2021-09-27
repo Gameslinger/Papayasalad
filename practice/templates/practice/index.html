@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block header%}
+<linnk rel="stylesheet" type="text/css" href="/static/css/practice/practice.css">
+{% endblock header%}
+{% block content %}
+{%if latest_lesson_list %}
+	<h1>{{room_name}}</h1>
+    {% for lesson in latest_lesson_list %}
+
+		<button type="button" class="btn btn-info w-100" data-toggle="collapse" data-target="#collapse_{{lesson.id}}">{{lesson.title}}</button>
+		<div id="collapse_{{lesson.id}}" style="border:2px solid gray;" class="collapse resource-list">
+		
+		<!--TODO: reverse this to remove dependency on hard coded urls-->
+		{% if is_teacher %}
+		<div><a href="/practice/{{lesson.id}}/edit">&lt;Edit Lesson&gt;</a></div>
+		{% endif %}
+		
+		{% for resource in lesson.resources.all %}
+			<div><a href={{resource.link}}>{{resource.title}}</a></div>
+		{% endfor %}
+		
+		</div>
+      {%endfor%}
+	  
+    {% else %}
+    <p>No lessons yet</p>
+    {%endif%}
+	{% if is_teacher %}
+	<form action="" method="post">
+	{% csrf_token %}
+	<br>
+	<button type="submit" name="addLesson" value="1" class="btn btn-info" >Add lesson</button>
+	</form>
+	{% endif %}
+{% endblock content %}

@@ -1,0 +1,46 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Papaya Salad</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script><link rel="stylesheet" type="text/css" href="/static/css/base.css">
+{% block header %}
+{% endblock header %}
+</head>
+
+<body>
+{% block topmenu %}
+<div class="top-menu container-fluid">
+<div class="row top-menu-list">
+<a href="/" class="col-sm btn btn-secondary">Home</a>
+<a href="/practice" class="col-sm btn btn-secondary">Practice</a>
+<a href="/quizzes" class="col-sm btn btn-secondary">Quizzes</a>
+<a href="/vocab" class="col-sm btn btn-secondary">Vocab</a>
+{% if user.is_authenticated %}
+<a href="/accounts/signout" class="col-sm btn btn-secondary">Log out</a>
+{% else %}
+<a href="/accounts/login" class="col-sm btn btn-secondary">Log in</a>
+<a href="/accounts/signup" class="col-sm btn btn-secondary">Sign up</a>
+{% endif %}
+</div>
+</div>
+{% endblock topmenu %}
+<div class="container" style="margin-top:0.5%;">
+<div class="row">
+<div class="col-sm-12">
+<div class="content">
+{% block content %}
+{% endblock content %}
+</div>
+</div>
+</div>
+</div>
+</body>
+{% block afterbody %}
+{% endblock afterbody %}
+</html>
